@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PRO APKS &#128151 - ⚙️ Pro Apks By Usman 🌸;</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="css2" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#070406;
+      --red-1: #ff2d2d;
+      --red-2: #ff6b1a;
+      --glass: rgba(0,0,0,0.75);
+      --btn-radius: 14px;
+      --accent-glow: 0 10px 30px rgba(255,80,80,0.18);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color:#fff;
+      overflow:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction: column;
+    }
+
+    /* canvas covers whole screen for matrix effect */
+    canvas#matrix{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      display:block;
+    }
+
+    /* central card */
+    .ui-wrap{
+      position:relative;
+      z-index:3;
+      width:100%;
+      max-width:420px;
+      padding:28px 22px 40px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:22px;
+      pointer-events:auto;
+    }
+
+    .title{
+      font-weight:800;
+      font-size:34px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      background: linear-gradient(90deg,#ff4b3a,#ffd93d 60%);
+      -webkit-background-clip: text;
+      background-clip:text;
+      color:transparent;
+      text-align:center;
+      text-shadow: 0 6px 30px rgba(255,80,80,0.08);
+    }
+
+    /* button list */
+    .btn-column{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      align-items:center;
+    }
+
+    .btn {
+      width:92%;
+      max-width:360px;
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      padding:16px 20px;
+      border-radius:var(--btn-radius);
+      background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.72));
+      color:#fff;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      text-decoration:none;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.6), var(--accent-glow);
+      border: 1px solid rgba(255,255,255,0.04);
+      transform: translateY(0);
+      transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .btn:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+      border-radius:inherit;
+      pointer-events:none;
+    }
+
+    .btn:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 18px 60px rgba(255,40,40,0.14), 0 6px 20px rgba(0,0,0,0.6);
+    }
+
+    .btn .label{
+      position:relative;
+      z-index:2;
+    }
+
+    /* glowing animation */
+    .btn.glow {
+      animation: pulse 2.2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 8px 28px rgba(0,0,0,0.6), 0 0 0 rgba(255,80,80,0.0) }
+      50%{ box-shadow: 0 18px 60px rgba(255,40,40,0.10), 0 0 40px rgba(255,60,60,0.06) }
+      100%{ box-shadow: 0 8px 28px rgba(0,0,0,0.6), 0 0 0 rgba(255,80,80,0.0) }
+    }
+
+    /* floating card */
+    .ui-wrap{
+      animation: floaty 6s ease-in-out infinite;
+    }
+    @keyframes floaty{
+      0%{ transform: translateY(0) }
+      50%{ transform: translateY(-8px) }
+      100%{ transform: translateY(0) }
+    }
+
+    /* footer */
+    .footer{
+      position:fixed;
+      bottom:12px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:4;
+      color:rgba(255,255,255,0.9);
+      font-size:14px;
+      background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.32));
+      padding:8px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+
+    /* music button */
+    .music-btn {
+      background: linear-gradient(90deg, #ff4b3a, #ffd93d);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: var(--btn-radius);
+      border: none;
+      cursor: pointer;
+      z-index: 5;
+      margin-top: 10px;
+      font-family: inherit;
+    }
+    .warning {
+      font-size: 14px;
+      color: #ff8080;
+      margin-top: 5px;
+    }
+
+    @media (max-width:420px){
+      .title{ font-size:28px }
+      .btn{ padding:14px 16px }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <!-- Audio autoplay -->
+  <audio id="bg-music" autoplay loop>
+    <source src="https://github.com/shanuwamxx/Calurator-/raw/main/cinematic-hip-hop-vlog-music-349853.mp3" type="audio/mpeg">
+  </source></audio>
+
+  <!-- Play / Pause Button -->
+  <button class="music-btn" onclick="toggleMusic()">&#127925; Play / Pause Music</button>
+  <div class="warning">&#11093; Site &#3473;&#3482;&#3546; music play &#3482;&#3515;&#3505;&#3530;&#3505; &#3512;&#3546; button click</div>
+
+  <div class="ui-wrap" role="main" aria-label="Main menu">
+    <div class="title">PRO APKS &#128151 - ⚙️ Pro Apks By Usman 🌸;</div>
+
+    <div class="btn-column" aria-hidden="false">
+      <a class="btn glow" href="https://d.picsartdl.com/dl/Picsart-MOD-APK-Premium-v28.9.6-picsartdl.com.apk">
+        <span class="label">PICSART PRO❤;</span>
+      </a>
+
+      <a class="btn" href="https://dl.gbwhatsapps.io/gbprodl/">
+        <span class="label">GB WASTAPP PRO🧡;</span>
+      </a>
+
+      <a class="btn" href="https://www.mediafire.com/file/1nhthm5kt7wg0es/Remini_3.7.1020.202514479.apk/file?dkey=gzc0ar3svpe&amp;r=1080">
+        <span class="label">REMINI AI💚;</span>
+      </a>
+      
+      <a class="btn" href="https://www.mediafire.com/file/56xwg00945be5db/CapCut_14.9.0.apk/file">
+        <span class="label">CAPCUT PRO💜;</span>
+      </a>
+      
+      <a class="btn" href="https://www.mediafire.com/file/8ky0gpdhkq5io5c/Facemoji_Keyboard.apk/file">
+        <span class="label">FACE EMOJI KEYBOARD💙;</span>
+      </a>
+      
+      <a class="btn" href="https://www.mediafire.com/file/le2wr7no2cay94a/SMS_BOMBER__9.8.apk/file">
+        <span class="label">SMS BOMBER🤎;</span>
+      </a>
+      
+      
+            <a class="btn" href="https://www.mediafire.com/file/0436nied1qg9eqx/Pro_Logo_Maker.apk/file">
+        <span class="label">LOGO MAKER PRO🖤;</span>
+      </a>
+      
+      <a class="btn" href="https://www.mediafire.com/file/z6wsxtaba6x0dml/Movie_Box.apk/file">
+        <span class="label">MOVIE BOX🤍;</span>
+      </a>
+      
+            <a class="btn" href="https://www.mediafire.com/file/j71xobq429akcj1/Fake_Message_Generator.apk/file">
+        <span class="label">FAKE MSG GENERATOR❤;</span>
+      </a>
+      
+                  <a class="btn" href="https://www.mediafire.com/file/y1foa0e3pjnn8kp/ChatBot_Pro.apk/file">
+        <span class="label">CHAT BOT PRO🧡;</span>
+      </a>
+      
+      <a class="btn" href="https://www.mediafire.com/file/y1foa0e3pjnn8kp/ChatBot_Pro.apk/file">
+        <span class="label">APP CLONER PRO💛;</span>
+      </a>
+      
+      <a class="btn" href="https://whatsapp.com/channel/0029VamDk0x4o7qTkpcap72M">
+        <span class="label">OUR WHATSAPP CHANNEL💕;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">⚙️ Pro Apks By Usman 🌸</div>
+
+  <script>
+    /* MATRIX STYLE BACKGROUND */
+    (function(){
+      const canvas = document.getElementById('matrix');
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = innerWidth;
+      let h = canvas.height = innerHeight;
+      const letters = '&#12450;&#12452;&#12459;&#12469;&#12479;&#12490;&#12495;&#12510;&#12516;&#12521;&#12527;0123456789';
+      const fontSize = Math.max(14, Math.floor(w / 80));
+      const columns = Math.floor(w / fontSize) + 1;
+      const drops = new Array(columns).fill(0);
+
+      function resize(){
+        w = canvas.width = innerWidth;
+        h = canvas.height = innerHeight;
+      }
+      addEventListener('resize', resize);
+
+      function draw(){
+        ctx.fillStyle = 'rgba(0,0,0,0.12)';
+        ctx.fillRect(0,0,w,h);
+        ctx.font = fontSize + 'px monospace';
+        for(let i = 0; i < drops.length; i++){
+          const text = letters.charAt(Math.floor(Math.random()*letters.length));
+          const x = i * fontSize;
+          const y = drops[i] * fontSize;
+          const grad = ctx.createLinearGradient(x, y - fontSize, x, y + fontSize*2);
+          grad.addColorStop(0, 'rgba(255,120,120,0.95)');
+          grad.addColorStop(0.5, 'rgba(255,50,50,0.9)');
+          grad.addColorStop(1, 'rgba(120,0,0,0.7)');
+          ctx.fillStyle = grad;
+          ctx.fillText(text, x, y);
+          if(y > h + Math.random() * 10000) drops[i] = 0;
+          drops[i]++;
+        }
+      }
+      setInterval(draw, 90);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0,0,w,h);
+    })();
+
+    /* ripple click */
+    document.querySelectorAll('.btn').forEach(btn=>{
+      btn.addEventListener('click', function(e){
+        const r = document.createElement('span');
+        r.style.position='absolute';
+        r.style.left = (e.offsetX - 10)+'px';
+        r.style.top = (e.offsetY - 10)+'px';
+        r.style.width = r.style.height = '20px';
+        r.style.borderRadius = '50%';
+        r.style.background = 'rgba(255,255,255,0.06)';
+        r.style.transform='scale(0)';
+        r.style.pointerEvents='none';
+        r.style.transition='transform 400ms ease, opacity 400ms';
+        r.style.zIndex = 1;
+        this.appendChild(r);
+        requestAnimationFrame(()=> r.style.transform='scale(10)');
+        setTimeout(()=> { r.style.opacity='0'; }, 250);
+        setTimeout(()=> r.remove(), 700);
+      });
+    });
+
+    /* music control */
+    function toggleMusic(){
+      const music = document.getElementById('bg-music');
+      if(music.paused){
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+  </script>
+</body>
+</html>
